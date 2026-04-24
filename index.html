@@ -268,7 +268,7 @@
                             <!-- Lista de Gastos -->
                             <div>
                                 <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 border-b border-gray-200 dark:border-gray-700 pb-1" id="listTitle">Detalles</h3>
-                                <div id="historyList" class="space-y-1.5 max-h-52 overflow-y-auto no-scrollbar">
+                                <div id="historyList" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar pb-2">
                                     <!-- Items inyectados por JS -->
                                 </div>
                                 <div class="mt-2 flex justify-between items-center font-bold text-base pt-2 border-t border-gray-200 dark:border-gray-700">
@@ -724,6 +724,21 @@
             updateChart(periodExpenses);
         }
 
+        // Nueva función para abrir/cerrar categorías en el historial
+        function toggleHistoryCategory(id) {
+            const container = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+                icon.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('flex');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
         function updateHistoryList(periodExpenses, totalPeriodIncome) {
             const listContainer = document.getElementById('historyList');
             const totalElement = document.getElementById('historyTotal');
@@ -734,26 +749,94 @@
             if(periodExpenses.length === 0) {
                 listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-3">No hay registros en este periodo.</p>';
             } else {
-                const sortedExpenses = [...periodExpenses].sort((a,b) => b.amount - a.amount);
-                sortedExpenses.forEach(exp => {
+                // 1. Agrupar gastos por categoría
+                const groupedExpenses = {};
+                periodExpenses.forEach(exp => {
+                    if (!groupedExpenses[exp.category]) {
+                        groupedExpenses[exp.category] = { items: [], subtotal: 0 };
+                    }
+                    groupedExpenses[exp.category].items.push(exp);
+                    groupedExpenses[exp.category].subtotal += exp.amount;
                     totalExp += exp.amount;
-                    const monthSuffix = currentHistoryMode === 'year' ? ` (${getShortMonthName(exp.month)})` : '';
+                });
+
+                // 2. Ordenar categorías de mayor a menor gasto
+                const sortedCategories = Object.keys(groupedExpenses).sort((a,b) => groupedExpenses[b].subtotal - groupedExpenses[a].subtotal);
+
+                sortedCategories.forEach((cat, index) => {
+                    const group = groupedExpenses[cat];
+                    const catId = `history-cat-${index}`;
                     
-                    const item = document.createElement('div');
-                    item.className = 'flex justify-between items-center bg-white dark:bg-gray-800 p-2 rounded border border-gray-100 dark:border-gray-700 shadow-sm';
-                    item.innerHTML = `
-                        <div class="flex flex-col">
-                            <span class="font-bold text-sm text-gray-800 dark:text-gray-100">${exp.type}<span class="text-gray-400 text-[10px] ml-1 capitalize font-normal">${monthSuffix}</span></span>
-                            <span class="text-[10px] text-gray-500 font-semibold tracking-wide uppercase">${exp.category}</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold text-sm text-gray-900 dark:text-white">${moneyFormatter.format(exp.amount)}</span>
-                            <button onclick="promptDeleteRecord(${exp.id})" class="text-red-400 hover:text-red-600 p-1 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            </button>
-                        </div>
+                    // Contenedor principal de la categoría
+                    const groupWrapper = document.createElement('div');
+                    groupWrapper.className = 'border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm';
+                    
+                    // Botón cabecera de la categoría
+                    const headerHTML = `
+                        <button onclick="toggleHistoryCategory('${catId}')" class="w-full flex justify-between items-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-2.5 transition-colors">
+                            <span class="font-bold text-sm text-gray-800 dark:text-gray-200">${cat}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-extrabold text-sm text-gray-900 dark:text-white">${moneyFormatter.format(group.subtotal)}</span>
+                                <svg id="icon-${catId}" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 transition-transform transform rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </div>
+                        </button>
                     `;
-                    listContainer.appendChild(item);
+                    
+                    // Contenedor interno oculto para los gastos de esta categoría
+                    const itemsContainer = document.createElement('div');
+                    itemsContainer.id = catId;
+                    itemsContainer.className = 'hidden flex-col bg-white dark:bg-gray-800/30';
+                    
+                    // NOVEDAD: Agrupar por tipo si estamos en vista de Año
+                    let itemsToRender = [];
+                    if (currentHistoryMode === 'year') {
+                        const typeGroups = {};
+                        group.items.forEach(exp => {
+                            if (!typeGroups[exp.type]) {
+                                typeGroups[exp.type] = { type: exp.type, amount: 0, count: 0 };
+                            }
+                            typeGroups[exp.type].amount += exp.amount;
+                            typeGroups[exp.type].count += 1;
+                        });
+                        itemsToRender = Object.values(typeGroups);
+                    } else {
+                        itemsToRender = group.items; // En meses, dejamos los pagos individuales
+                    }
+                    
+                    // Ordenar los items internos de mayor a menor y crearlos
+                    const sortedItems = itemsToRender.sort((a,b) => b.amount - a.amount);
+                    
+                    sortedItems.forEach(item => {
+                        let extraInfo = '';
+                        let actionBtn = '';
+
+                        if (currentHistoryMode === 'year') {
+                            // En vista anual ponemos "(x pagos)" y quitamos el botón de borrar por seguridad
+                            extraInfo = ` <span class="text-[10px] text-gray-400 ml-1 font-normal">(${item.count} pagos)</span>`;
+                        } else {
+                            // En vista mensual ponemos el botón de borrar
+                            actionBtn = `
+                                <button onclick="promptDeleteRecord(${item.id})" class="text-red-400 hover:text-red-600 p-1 transition-colors bg-red-50 dark:bg-red-900/20 rounded">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                            `;
+                        }
+
+                        const itemHtml = document.createElement('div');
+                        itemHtml.className = 'flex justify-between items-center py-2 px-3 border-t border-gray-100 dark:border-gray-700/50';
+                        itemHtml.innerHTML = `
+                            <span class="font-medium text-sm text-gray-600 dark:text-gray-300">${item.type}${extraInfo}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm text-gray-700 dark:text-gray-200">${moneyFormatter.format(item.amount)}</span>
+                                ${actionBtn}
+                            </div>
+                        `;
+                        itemsContainer.appendChild(itemHtml);
+                    });
+
+                    groupWrapper.innerHTML = headerHTML;
+                    groupWrapper.appendChild(itemsContainer);
+                    listContainer.appendChild(groupWrapper);
                 });
             }
 
