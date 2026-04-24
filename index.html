@@ -74,13 +74,18 @@
                 </div>
 
                 <div class="bg-yellow-50 dark:bg-gray-800 p-3.5 rounded-xl border border-yellow-100 dark:border-gray-700">
-                    <strong class="text-yellow-600 dark:text-yellow-400 text-base">4. Apuntar tu pensión 💰</strong><br>
-                    Toca el botón <span class="font-bold text-yellow-600">amarillo</span> de abajo. Pon el dinero que has cobrado de pensión este mes y dale a guardar.
+                    <strong class="text-yellow-600 dark:text-yellow-400 text-base">4. Apuntar tu nómina o pensión 💰</strong><br>
+                    Toca el botón <span class="font-bold text-yellow-600">amarillo</span> de abajo. Pon el dinero que has cobrado de nómina o pensión este mes y dale a guardar.
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-800 p-3.5 rounded-xl border border-gray-200 dark:border-gray-700">
-                    <strong class="text-gray-700 dark:text-gray-300 text-base">5. Guardar e Imprimir 🖨️</strong><br>
-                    Abajo del todo tienes unos botones para guardar copias. El botón <span class="font-bold text-green-600">verde "Extraer PDF"</span> hace un documento ordenado con tus cuentas para que lo puedas enviar por WhatsApp o imprimirlo en papel.
+                    <strong class="text-gray-700 dark:text-gray-300 text-base">5. Guardar copias e Imprimir 🖨️</strong><br>
+                    Abajo del todo tienes tres botones muy importantes:
+                    <ul class="list-none mt-2 space-y-3">
+                        <li><span class="font-bold text-blue-500">Botón Azul (Exportar):</span> Sirve para hacer una <strong>copia de seguridad</strong>. Al tocarlo, se guarda un archivito en tu móvil con todas tus cuentas. ¡Es tu salvavidas por si alguna vez cambias de teléfono!</li>
+                        <li><span class="font-bold text-orange-500">Botón Naranja (Importar):</span> Sirve para <strong>recuperar</strong> esa copia. Si tienes un móvil nuevo o se te borra algo por error, tocas aquí, buscas el archivito que guardaste y ¡todos tus datos vuelven a aparecer mágicamente!</li>
+                        <li><span class="font-bold text-green-500">Botón Verde (Extraer PDF):</span> Hace un documento limpio y ordenado con tus cuentas para que lo puedas enviar por WhatsApp o imprimirlo en papel.</li>
+                    </ul>
                 </div>
             </div>
 
@@ -1016,8 +1021,8 @@
 
                 setTimeout(() => {
                     const wrapper = document.getElementById('wrapper-' + sectionId);
-                    const yPosition = wrapper.getBoundingClientRect().top + window.scrollY - 20;
-                    window.scrollTo({ top: yPosition, behavior: 'smooth' });
+                    // Esto centra la pestaña perfectamente en medio de la pantalla
+                    wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             }
         }
