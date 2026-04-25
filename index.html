@@ -40,6 +40,12 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Efecto sutil para el input del nombre */
+        .name-input:hover, .name-input:focus {
+            border-bottom-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.05);
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-darkBg text-gray-800 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300">
@@ -113,9 +119,16 @@
     <!-- Contenedor Principal -->
     <div class="max-w-md mx-auto relative pt-2 pb-10">
         
-        <!-- Cabecera Compacta (Sin Título, alineada a la derecha) -->
-        <header class="flex justify-end items-center px-5 py-3">
-            <div class="flex items-center gap-2">
+        <!-- Cabecera Compacta con Nombre -->
+        <header class="flex justify-between items-center px-5 pt-1 pb-1.5">
+            <!-- Saludo y Nombre -->
+            <div class="flex items-center gap-1 min-w-0 flex-1">
+                <span class="text-gray-500 dark:text-gray-400 font-medium text-sm whitespace-nowrap">Hola,</span>
+                <input type="text" id="userNameInput" placeholder="tu nombre..." onblur="saveName()" class="name-input bg-transparent border-b-2 border-transparent outline-none text-gray-800 dark:text-gray-100 font-bold text-base w-full truncate transition-all rounded-t px-1 py-0.5">
+            </div>
+            
+            <!-- Botones -->
+            <div class="flex items-center gap-2 shrink-0 ml-2">
                 <button onclick="toggleInfo()" class="px-3 py-1.5 rounded-full border-2 border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition text-sm font-bold shadow-sm">
                     Ayuda
                 </button>
@@ -132,7 +145,7 @@
         </header>
 
         <!-- Contenido -->
-        <main class="px-4 mt-2">
+        <main class="px-4 mt-1">
             
             <!-- Resumen: Total Mes Seleccionado -->
             <div class="bg-white dark:bg-darkCard p-5 rounded-2xl shadow-sm text-center relative overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -389,14 +402,13 @@
         const currentMonthNum = String(today.getMonth() + 1).padStart(2, '0');
         const currentRealMonth = `${currentYear}-${currentMonthNum}`;
 
-        // Empezamos con base limpia (sin gastos de prueba) para que no haya basura
         let expenses = []; 
         let incomes = {};
         
         let expenseIdCounter = 1;
         let expenseChartInstance = null;
         let currentHistoryMode = 'month'; 
-        let currentDashboardMonth = currentRealMonth; // El mes que se muestra en el panel superior
+        let currentDashboardMonth = currentRealMonth; 
 
         let deleteMode = null; 
         let itemToDeleteId = null; 
@@ -408,6 +420,7 @@
         // --- MANEJO DE MEMORIA LOCAL (Local Storage) ---
         function saveData() {
             const data = {
+                userName: document.getElementById('userNameInput').value,
                 categories: dataCategories,
                 expenses: expenses,
                 incomes: incomes,
@@ -421,12 +434,17 @@
             const saved = localStorage.getItem('controlGastosData');
             if (saved) {
                 const parsed = JSON.parse(saved);
+                document.getElementById('userNameInput').value = parsed.userName || '';
                 dataCategories = parsed.categories || dataCategories;
                 expenses = parsed.expenses || [];
                 incomes = parsed.incomes || {};
                 expenseIdCounter = parsed.expenseIdCounter || 1;
                 currentDashboardMonth = parsed.lastMonth || currentRealMonth;
             }
+        }
+
+        function saveName() {
+            saveData();
         }
 
         function hasEmoji(str) {
@@ -574,7 +592,7 @@
             showToast('Tipo añadido a ' + currentCat, 'bg-blue-500');
         }
 
-        // --- Interfaz Principal (Dashboard vinculado al Historial) ---
+        // --- Interfaz Principal ---
         function updateDashboard() {
             const targetMonth = currentDashboardMonth;
             const currentMonthExpenses = expenses.filter(exp => exp.month === targetMonth);
@@ -671,7 +689,6 @@
             
             document.getElementById('recordAmount').value = '';
             
-            // Si metemos un gasto en el mes actual del panel, lo refrescamos
             if (month === currentDashboardMonth) {
                 updateDashboard();
                 if(document.getElementById('historySection').classList.contains('open')) {
@@ -702,13 +719,11 @@
             updateHistoryView();
         }
 
-        // Evento lanzado cuando se cambia el selector de mes en historial
         function onHistoryMonthChange() {
             setHistoryMode('month');
             const newMonth = document.getElementById('filterMonthInput').value;
             currentDashboardMonth = newMonth;
             
-            // Sincronizar todos los inputs
             document.getElementById('incomeMonth').value = newMonth;
             document.getElementById('recordMonth').value = newMonth;
             
@@ -942,6 +957,7 @@
         // --- SISTEMA DE EXPORTACIÓN E IMPORTACIÓN ---
         function exportJSON() {
             const dataToExport = {
+                userName: document.getElementById('userNameInput').value,
                 categories: dataCategories,
                 expenses: expenses,
                 incomes: incomes,
@@ -974,6 +990,7 @@
                     const importedData = JSON.parse(e.target.result);
                     
                     if (importedData.categories && importedData.expenses) {
+                        document.getElementById('userNameInput').value = importedData.userName || '';
                         dataCategories = importedData.categories;
                         expenses = importedData.expenses;
                         incomes = importedData.incomes || {}; 
