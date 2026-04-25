@@ -55,12 +55,12 @@
             <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
                 <div class="bg-blue-50 dark:bg-gray-800 p-3.5 rounded-xl border border-blue-100 dark:border-gray-700">
                     <strong class="text-blue-600 dark:text-blue-400 text-base">1. Tu resumen principal 📊</strong><br>
-                    Arriba del todo verás siempre cuánto dinero has ingresado, lo que has gastado, y lo que te sobra (tu balance del mes).
+                    Arriba del todo verás siempre cuánto dinero has ingresado, lo que has gastado, y lo que te sobra (tu balance) del mes que tengas seleccionado.
                 </div>
 
                 <div class="bg-green-50 dark:bg-gray-800 p-3.5 rounded-xl border border-green-100 dark:border-gray-700">
                     <strong class="text-green-600 dark:text-green-400 text-base">2. Apuntar un gasto nuevo 🛒</strong><br>
-                    Toca el botón con el borde y la cajita <span class="font-bold text-green-600">verde</span> "Nuevo registro".
+                    Toca el botón <span class="font-bold text-green-600">verde</span> "Nuevo registro".
                     <ul class="list-disc ml-5 mt-2 space-y-1">
                         <li>Elige una categoría (ejemplo: Vivienda).</li>
                         <li>Elige de qué es el gasto (ejemplo: Luz). <i>Si falta alguno, dale al botón azul del "+" que hay al lado para crearlo.</i></li>
@@ -70,21 +70,21 @@
 
                 <div class="bg-purple-50 dark:bg-gray-800 p-3.5 rounded-xl border border-purple-100 dark:border-gray-700">
                     <strong class="text-purple-600 dark:text-purple-400 text-base">3. Ver tus gastos (Historial) 📋</strong><br>
-                    Toca el botón <span class="font-bold text-purple-600">morado</span> para ver la lista de todo lo que has comprado y un dibujo de colores. Si te equivocaste al apuntar algo, aquí puedes borrarlo tocando la papelera roja que hay junto al gasto.
+                    Toca el botón <span class="font-bold text-purple-600">morado</span> para ver la lista de lo que has gastado. Puedes elegir qué mes ver. Si te equivocaste al apuntar algo, aquí puedes borrarlo tocando la papelera roja.
                 </div>
 
                 <div class="bg-yellow-50 dark:bg-gray-800 p-3.5 rounded-xl border border-yellow-100 dark:border-gray-700">
                     <strong class="text-yellow-600 dark:text-yellow-400 text-base">4. Apuntar tu nómina o pensión 💰</strong><br>
-                    Toca el botón <span class="font-bold text-yellow-600">amarillo</span> de abajo. Pon el dinero que has cobrado de nómina o pensión este mes y dale a guardar.
+                    Toca el botón <span class="font-bold text-yellow-600">amarillo</span> de abajo. Pon el dinero que has cobrado de nómina o pensión y dale a guardar para calcular tu balance.
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-800 p-3.5 rounded-xl border border-gray-200 dark:border-gray-700">
                     <strong class="text-gray-700 dark:text-gray-300 text-base">5. Guardar copias e Imprimir 🖨️</strong><br>
                     Abajo del todo tienes tres botones muy importantes:
                     <ul class="list-none mt-2 space-y-3">
-                        <li><span class="font-bold text-blue-500">Botón Azul (Exportar):</span> Sirve para hacer una <strong>copia de seguridad</strong>. Al tocarlo, se guarda un archivito en tu móvil con todas tus cuentas. ¡Es tu salvavidas por si alguna vez cambias de teléfono!</li>
-                        <li><span class="font-bold text-orange-500">Botón Naranja (Importar):</span> Sirve para <strong>recuperar</strong> esa copia. Si tienes un móvil nuevo o se te borra algo por error, tocas aquí, buscas el archivito que guardaste y ¡todos tus datos vuelven a aparecer mágicamente!</li>
-                        <li><span class="font-bold text-green-500">Botón Verde (Extraer PDF):</span> Hace un documento limpio y ordenado con tus cuentas para que lo puedas enviar por WhatsApp o imprimirlo en papel.</li>
+                        <li><span class="font-bold text-blue-500">Botón Azul (Exportar):</span> Guarda una <strong>copia de seguridad</strong> en tu móvil. ¡Es tu salvavidas por si cambias de teléfono!</li>
+                        <li><span class="font-bold text-orange-500">Botón Naranja (Importar):</span> Sirve para <strong>recuperar</strong> esa copia. Buscas el archivo que guardaste y ¡todos tus datos vuelven a aparecer!</li>
+                        <li><span class="font-bold text-green-500">Botón Verde (Extraer PDF):</span> Hace un documento limpio para que lo puedas enviar por WhatsApp o imprimir en papel.</li>
                     </ul>
                 </div>
             </div>
@@ -110,12 +110,11 @@
         </div>
     </div>
 
-    <!-- Contenedor Principal Más Compacto -->
+    <!-- Contenedor Principal -->
     <div class="max-w-md mx-auto relative pt-2 pb-10">
         
-        <!-- Cabecera Compacta (Nuevos Botones de Texto) -->
-        <header class="flex justify-between items-center px-5 py-3">
-            <h1 class="text-xl font-extrabold tracking-tight">Control de Gastos</h1>
+        <!-- Cabecera Compacta (Sin Título, alineada a la derecha) -->
+        <header class="flex justify-end items-center px-5 py-3">
             <div class="flex items-center gap-2">
                 <button onclick="toggleInfo()" class="px-3 py-1.5 rounded-full border-2 border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition text-sm font-bold shadow-sm">
                     Ayuda
@@ -135,7 +134,7 @@
         <!-- Contenido -->
         <main class="px-4 mt-2">
             
-            <!-- Resumen: Total Mes Actual (Con Balance) -->
+            <!-- Resumen: Total Mes Seleccionado -->
             <div class="bg-white dark:bg-darkCard p-5 rounded-2xl shadow-sm text-center relative overflow-hidden border border-gray-100 dark:border-gray-800">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-primary"></div>
                 <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Gastos del mes</h2>
@@ -255,7 +254,7 @@
                             <div class="flex gap-2 bg-white dark:bg-gray-900 p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                                 <div class="flex-1 relative">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-0.5">Ver por Mes</label>
-                                    <input type="month" id="filterMonthInput" onfocus="setHistoryMode('month')" onchange="setHistoryMode('month')" class="w-full bg-transparent text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none ring-2 ring-primary border-transparent cursor-pointer transition-all">
+                                    <input type="month" id="filterMonthInput" onfocus="setHistoryMode('month')" onchange="onHistoryMonthChange()" class="w-full bg-transparent text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none ring-2 ring-primary border-transparent cursor-pointer transition-all">
                                 </div>
                                 <div class="w-px bg-gray-200 dark:bg-gray-700 my-1"></div>
                                 <div class="flex-1 relative">
@@ -377,7 +376,6 @@
 
     <script>
         // --- Estado y Base de Datos ---
-        // Incorporando Emojis 
         let dataCategories = {
             "🏠 Vivienda": ["🏠 Hipoteca o alquiler", "📱 Teléfono", "⚡ Electricidad", "🅿️ Comunidad Parking", "💧 Agua", "🏛️ IBI", "🗑️ Basuras", "🛠️ Derrama comunidad", "🅿️ IBI Parking", "🏢 Comunidad"],
             "🚗 Vehículos": ["🏛️ Impuestos Coche", "🛵 Impuestos Moto", "🛡️ Seguro coche", "🛡️ Seguro Moto", "⛽ Combustible", "📋 ITV", "📋 ITV Moto"],
@@ -391,21 +389,15 @@
         const currentMonthNum = String(today.getMonth() + 1).padStart(2, '0');
         const currentRealMonth = `${currentYear}-${currentMonthNum}`;
 
-        let expenses = [
-            { id: 1, category: '🏠 Vivienda', type: '⚡ Electricidad', amount: 85.50, month: currentRealMonth },
-            { id: 2, category: '🚗 Vehículos', type: '⛽ Combustible', amount: 60.00, month: currentRealMonth },
-            { id: 3, category: '🧍 Personal', type: '🏋️ Gimnasio', amount: 35.00, month: currentRealMonth },
-            { id: 4, category: '🛡️ Seguros', type: '🏥 Mutua', amount: 45.00, month: currentRealMonth }
-        ]; 
+        // Empezamos con base limpia (sin gastos de prueba) para que no haya basura
+        let expenses = []; 
+        let incomes = {};
         
-        // Objeto para guardar la Nómina/Pensión de cada mes (ej: {"2026-04": 2000})
-        let incomes = {
-            [currentRealMonth]: 1500.00 // Ingreso de prueba
-        };
-        
-        let expenseIdCounter = 5;
+        let expenseIdCounter = 1;
         let expenseChartInstance = null;
         let currentHistoryMode = 'month'; 
+        let currentDashboardMonth = currentRealMonth; // El mes que se muestra en el panel superior
+
         let deleteMode = null; 
         let itemToDeleteId = null; 
         let itemToDeleteName = null; 
@@ -413,7 +405,30 @@
         const moneyFormatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
         const chartColors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#ec4899', '#06b6d4', '#f97316'];
 
-        // Helper para chequear si un string ya tiene emoji
+        // --- MANEJO DE MEMORIA LOCAL (Local Storage) ---
+        function saveData() {
+            const data = {
+                categories: dataCategories,
+                expenses: expenses,
+                incomes: incomes,
+                expenseIdCounter: expenseIdCounter,
+                lastMonth: currentDashboardMonth
+            };
+            localStorage.setItem('controlGastosData', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('controlGastosData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                dataCategories = parsed.categories || dataCategories;
+                expenses = parsed.expenses || [];
+                incomes = parsed.incomes || {};
+                expenseIdCounter = parsed.expenseIdCounter || 1;
+                currentDashboardMonth = parsed.lastMonth || currentRealMonth;
+            }
+        }
+
         function hasEmoji(str) {
             const emojiRegex = /\p{Emoji}/u;
             return emojiRegex.test(str.charAt(0)) || emojiRegex.test(str.charAt(1));
@@ -424,17 +439,20 @@
             const isDark = document.documentElement.classList.contains('dark');
             document.getElementById('themeButtonText').textContent = isDark ? 'Oscuro' : 'Claro';
 
-            document.getElementById('recordMonth').value = currentRealMonth;
-            document.getElementById('filterMonthInput').value = currentRealMonth;
-            document.getElementById('incomeMonth').value = currentRealMonth;
+            // Cargar datos de la memoria
+            loadData();
+
+            // Poner el mes guardado en todos los selectores
+            document.getElementById('recordMonth').value = currentDashboardMonth;
+            document.getElementById('filterMonthInput').value = currentDashboardMonth;
+            document.getElementById('incomeMonth').value = currentDashboardMonth;
             
             initYearFilter();
             initCategoryGroups();
             updateDashboard();
-            updateIncomeInput(); // Actualizar input de ingresos según mes
+            updateIncomeInput(); 
         });
 
-        // Evento para actualizar valor de ingresos según cambie el mes en el selector
         document.getElementById('incomeMonth').addEventListener('change', updateIncomeInput);
 
         function updateIncomeInput() {
@@ -508,7 +526,6 @@
             let newCat = input.value.trim();
 
             if (!newCat) return showToast('Escribe un nombre válido', 'bg-red-500');
-            
             if (!hasEmoji(newCat)) newCat = '🏷️ ' + newCat;
 
             if (Object.keys(dataCategories).some(c => c.toLowerCase() === newCat.toLowerCase())) {
@@ -521,6 +538,7 @@
             initCategoryGroups();   
             document.getElementById('recordCategoryGroup').value = newCat;
             updateTypeSelect(); 
+            saveData(); // Guardar
             showToast('Categoría añadida', 'bg-blue-500');
         }
 
@@ -541,7 +559,6 @@
 
             if (!currentCat) return showToast('Primero crea una categoría', 'bg-yellow-500');
             if (!newType) return showToast('Escribe un nombre válido', 'bg-red-500');
-            
             if (!hasEmoji(newType)) newType = '🏷️ ' + newType;
 
             if (dataCategories[currentCat].some(t => t.toLowerCase() === newType.toLowerCase())) {
@@ -553,14 +570,16 @@
             toggleNewTypeInput(); 
             updateTypeSelect();   
             document.getElementById('recordType').value = newType;
+            saveData(); // Guardar
             showToast('Tipo añadido a ' + currentCat, 'bg-blue-500');
         }
 
-        // --- Interfaz Principal (Dashboard) ---
+        // --- Interfaz Principal (Dashboard vinculado al Historial) ---
         function updateDashboard() {
-            const currentMonthExpenses = expenses.filter(exp => exp.month === currentRealMonth);
+            const targetMonth = currentDashboardMonth;
+            const currentMonthExpenses = expenses.filter(exp => exp.month === targetMonth);
             const totalExp = currentMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const totalInc = incomes[currentRealMonth] || 0;
+            const totalInc = incomes[targetMonth] || 0;
             const balance = totalInc - totalExp;
             
             document.getElementById('totalAmount').textContent = moneyFormatter.format(totalExp);
@@ -570,7 +589,8 @@
             balEl.textContent = moneyFormatter.format(balance);
             balEl.className = `font-bold text-sm mt-0.5 ${balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`;
 
-            const monthLabel = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(today);
+            const dateObj = new Date(targetMonth + '-01');
+            const monthLabel = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(dateObj);
             document.getElementById('currentMonthLabel').textContent = monthLabel;
         }
 
@@ -628,6 +648,7 @@
                 initCategoryGroups();
                 showToast('Categoría borrada', 'bg-gray-500');
             }
+            saveData(); // Guardar
             cancelDelete();
         }
 
@@ -649,13 +670,18 @@
             });
             
             document.getElementById('recordAmount').value = '';
-            updateDashboard();
+            
+            // Si metemos un gasto en el mes actual del panel, lo refrescamos
+            if (month === currentDashboardMonth) {
+                updateDashboard();
+                if(document.getElementById('historySection').classList.contains('open')) {
+                    updateHistoryView();
+                }
+            }
+
+            saveData(); // Guardar
             toggleSection('recordSection');
             showToast('Gasto registrado con éxito', 'bg-green-500');
-            
-            if(document.getElementById('historySection').classList.contains('open')) {
-                updateHistoryView();
-            }
         }
 
         // --- Historial, Gráficos y Nómina ---
@@ -676,6 +702,21 @@
             updateHistoryView();
         }
 
+        // Evento lanzado cuando se cambia el selector de mes en historial
+        function onHistoryMonthChange() {
+            setHistoryMode('month');
+            const newMonth = document.getElementById('filterMonthInput').value;
+            currentDashboardMonth = newMonth;
+            
+            // Sincronizar todos los inputs
+            document.getElementById('incomeMonth').value = newMonth;
+            document.getElementById('recordMonth').value = newMonth;
+            
+            updateDashboard();
+            updateIncomeInput();
+            saveData();
+        }
+
         function saveIncome() {
             const targetMonth = document.getElementById('incomeMonth').value;
             const amount = parseFloat(document.getElementById('incomeAmount').value);
@@ -691,10 +732,10 @@
             }
             
             updateDashboard();
-            // Actualizar historial si está abierto para que se refleje el balance
             if(document.getElementById('historySection').classList.contains('open')){
                 updateHistoryView();
             }
+            saveData(); // Guardar
             toggleSection('incomeSection');
         }
 
@@ -703,28 +744,6 @@
             return new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(date);
         }
 
-        function updateHistoryView() {
-            let periodExpenses = [];
-            let totalPeriodIncome = 0;
-            
-            if (currentHistoryMode === 'month') {
-                const targetMonth = document.getElementById('filterMonthInput').value;
-                periodExpenses = expenses.filter(exp => exp.month === targetMonth);
-                totalPeriodIncome = incomes[targetMonth] || 0;
-            } else {
-                const targetYear = document.getElementById('filterYearSelect').value;
-                periodExpenses = expenses.filter(exp => exp.month.startsWith(targetYear + '-'));
-                
-                Object.keys(incomes).forEach(key => {
-                    if (key.startsWith(targetYear + '-')) totalPeriodIncome += incomes[key];
-                });
-            }
-            
-            updateHistoryList(periodExpenses, totalPeriodIncome);
-            updateChart(periodExpenses);
-        }
-
-        // Nueva función para abrir/cerrar categorías en el historial
         function toggleHistoryCategory(id) {
             const container = document.getElementById(id);
             const icon = document.getElementById('icon-' + id);
@@ -739,6 +758,26 @@
             }
         }
 
+        function updateHistoryView() {
+            let periodExpenses = [];
+            let totalPeriodIncome = 0;
+            
+            if (currentHistoryMode === 'month') {
+                const targetMonth = document.getElementById('filterMonthInput').value;
+                periodExpenses = expenses.filter(exp => exp.month === targetMonth);
+                totalPeriodIncome = incomes[targetMonth] || 0;
+            } else {
+                const targetYear = document.getElementById('filterYearSelect').value;
+                periodExpenses = expenses.filter(exp => exp.month.startsWith(targetYear + '-'));
+                Object.keys(incomes).forEach(key => {
+                    if (key.startsWith(targetYear + '-')) totalPeriodIncome += incomes[key];
+                });
+            }
+            
+            updateHistoryList(periodExpenses, totalPeriodIncome);
+            updateChart(periodExpenses);
+        }
+
         function updateHistoryList(periodExpenses, totalPeriodIncome) {
             const listContainer = document.getElementById('historyList');
             const totalElement = document.getElementById('historyTotal');
@@ -749,7 +788,6 @@
             if(periodExpenses.length === 0) {
                 listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-3">No hay registros en este periodo.</p>';
             } else {
-                // 1. Agrupar gastos por categoría
                 const groupedExpenses = {};
                 periodExpenses.forEach(exp => {
                     if (!groupedExpenses[exp.category]) {
@@ -760,18 +798,15 @@
                     totalExp += exp.amount;
                 });
 
-                // 2. Ordenar categorías de mayor a menor gasto
                 const sortedCategories = Object.keys(groupedExpenses).sort((a,b) => groupedExpenses[b].subtotal - groupedExpenses[a].subtotal);
 
                 sortedCategories.forEach((cat, index) => {
                     const group = groupedExpenses[cat];
                     const catId = `history-cat-${index}`;
                     
-                    // Contenedor principal de la categoría
                     const groupWrapper = document.createElement('div');
                     groupWrapper.className = 'border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm';
                     
-                    // Botón cabecera de la categoría
                     const headerHTML = `
                         <button onclick="toggleHistoryCategory('${catId}')" class="w-full flex justify-between items-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-2.5 transition-colors">
                             <span class="font-bold text-sm text-gray-800 dark:text-gray-200">${cat}</span>
@@ -782,12 +817,10 @@
                         </button>
                     `;
                     
-                    // Contenedor interno oculto para los gastos de esta categoría
                     const itemsContainer = document.createElement('div');
                     itemsContainer.id = catId;
                     itemsContainer.className = 'hidden flex-col bg-white dark:bg-gray-800/30';
                     
-                    // NOVEDAD: Agrupar por tipo si estamos en vista de Año
                     let itemsToRender = [];
                     if (currentHistoryMode === 'year') {
                         const typeGroups = {};
@@ -800,10 +833,9 @@
                         });
                         itemsToRender = Object.values(typeGroups);
                     } else {
-                        itemsToRender = group.items; // En meses, dejamos los pagos individuales
+                        itemsToRender = group.items;
                     }
                     
-                    // Ordenar los items internos de mayor a menor y crearlos
                     const sortedItems = itemsToRender.sort((a,b) => b.amount - a.amount);
                     
                     sortedItems.forEach(item => {
@@ -811,10 +843,8 @@
                         let actionBtn = '';
 
                         if (currentHistoryMode === 'year') {
-                            // En vista anual ponemos "(x pagos)" y quitamos el botón de borrar por seguridad
                             extraInfo = ` <span class="text-[10px] text-gray-400 ml-1 font-normal">(${item.count} pagos)</span>`;
                         } else {
-                            // En vista mensual ponemos el botón de borrar
                             actionBtn = `
                                 <button onclick="promptDeleteRecord(${item.id})" class="text-red-400 hover:text-red-600 p-1 transition-colors bg-red-50 dark:bg-red-900/20 rounded">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -910,13 +940,13 @@
         }
 
         // --- SISTEMA DE EXPORTACIÓN E IMPORTACIÓN ---
-        
         function exportJSON() {
             const dataToExport = {
                 categories: dataCategories,
                 expenses: expenses,
                 incomes: incomes,
-                expenseIdCounter: expenseIdCounter
+                expenseIdCounter: expenseIdCounter,
+                lastMonth: currentDashboardMonth
             };
             
             const dataStr = JSON.stringify(dataToExport, null, 2);
@@ -948,6 +978,11 @@
                         expenses = importedData.expenses;
                         incomes = importedData.incomes || {}; 
                         expenseIdCounter = importedData.expenseIdCounter || expenses.length + 1;
+                        if(importedData.lastMonth) currentDashboardMonth = importedData.lastMonth;
+                        
+                        document.getElementById('recordMonth').value = currentDashboardMonth;
+                        document.getElementById('filterMonthInput').value = currentDashboardMonth;
+                        document.getElementById('incomeMonth').value = currentDashboardMonth;
                         
                         initCategoryGroups();
                         updateDashboard();
@@ -955,6 +990,7 @@
                         if(document.getElementById('historySection').classList.contains('open')) {
                             updateHistoryView();
                         }
+                        saveData(); // Guardar lo importado
                         showToast('Datos importados con éxito', 'bg-green-500');
                     } else {
                         showToast('El archivo no tiene el formato correcto', 'bg-red-500');
@@ -1063,7 +1099,6 @@
             html.classList.toggle('dark');
             const isDark = html.classList.contains('dark');
             
-            // Actualizar el texto del botón
             document.getElementById('themeButtonText').textContent = isDark ? 'Oscuro' : 'Claro';
 
             if(expenseChartInstance && document.getElementById('historySection').classList.contains('open')){
@@ -1104,7 +1139,6 @@
 
                 setTimeout(() => {
                     const wrapper = document.getElementById('wrapper-' + sectionId);
-                    // Esto centra la pestaña perfectamente en medio de la pantalla
                     wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             }
