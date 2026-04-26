@@ -257,7 +257,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         </div>
                         
-                        <!-- Botón Personalizar (Nuevo) -->
+                        <!-- Botón Personalizar -->
                         <button onclick="toggleSettingsDropdown()" class="p-1.5 rounded-lg border-2 border-pink-500 text-pink-600 dark:text-pink-400 bg-white/50 dark:bg-black/30 hover:bg-pink-50 dark:hover:bg-pink-900/40 transition shadow-sm backdrop-blur-sm" title="Personalizar App">
                             🎨
                         </button>
@@ -358,7 +358,7 @@
                             </div>
                         </div>
                         
-                        <p id="currentMonthLabel" class="text-sm mt-4 text-gray-600 dark:text-gray-300 font-bold capitalize">Cargando...</p>
+                        <p id="currentMonthLabel" class="text-sm mt-4 text-gray-600 dark:text-gray-300 font-bold">Cargando...</p>
                     </div>
 
                     <!-- Acciones -->
@@ -435,7 +435,7 @@
                                         </div>
                                         <div class="flex-1">
                                             <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 mb-1">Fecha</label>
-                                            <input type="month" id="recordMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm capitalize shadow-sm">
+                                            <input type="month" id="recordMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm shadow-sm">
                                         </div>
                                     </div>
 
@@ -448,7 +448,7 @@
 
                         <!-- Sección: Historial y Gráfico -->
                         <div id="wrapper-historySection">
-                            <button onclick="toggleSection('historySection'); updateHistoryView();" class="w-full flex justify-between items-center theme-card p-3.5 rounded-xl font-semibold shadow-md border border-gray-200/50 dark:border-gray-700/50 hover:opacity-90 transition backdrop-blur-md">
+                            <button onclick="toggleSection('historySection')" class="w-full flex justify-between items-center theme-card p-3.5 rounded-xl font-semibold shadow-md border border-gray-200/50 dark:border-gray-700/50 hover:opacity-90 transition backdrop-blur-md">
                                 <div class="flex items-center gap-3 text-gray-800 dark:text-gray-100">
                                     <span class="bg-purple-100 text-purple-600 dark:bg-gray-800 dark:text-purple-400 p-1.5 rounded-lg shadow-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -467,7 +467,7 @@
                                     <div class="flex gap-2 bg-white/80 dark:bg-gray-900/80 p-2 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm">
                                         <div class="flex-1 flex flex-col gap-1.5">
                                             <button onclick="setHistoryMode('month')" id="btnModeMonth" class="bg-primary text-white text-[10px] uppercase tracking-wide font-bold py-1.5 rounded shadow-sm transition-colors">Ver por Mes</button>
-                                            <input type="month" id="filterMonthInput" onchange="onHistoryMonthChange()" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary border-transparent cursor-pointer transition-all text-center capitalize">
+                                            <input type="month" id="filterMonthInput" onchange="onHistoryMonthChange()" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary border-transparent cursor-pointer transition-all text-center">
                                         </div>
                                         <div class="w-px bg-gray-200 dark:bg-gray-700 my-1"></div>
                                         <div class="flex-1 flex flex-col gap-1.5">
@@ -521,7 +521,7 @@
                                     <div class="flex gap-2">
                                         <div class="flex-1">
                                             <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 mb-1">Mes a valorar</label>
-                                            <input type="month" id="incomeMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm capitalize shadow-sm">
+                                            <input type="month" id="incomeMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm shadow-sm">
                                         </div>
                                         <div class="relative flex-1">
                                             <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide ml-1 mb-1">Ingresos</label>
@@ -575,7 +575,7 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración limpia sin espacios problemáticos
+        // Configuración limpia de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD-syaL0LpEQCFNIz2rb4eNyV1Zc2im9AM",
             authDomain: "control-de-gastos-e92fa.firebaseapp.com",
@@ -592,7 +592,6 @@
             db = getFirestore(app);
         } catch (e) {
             console.error("Firebase bloqueado o error en configuración", e);
-            // El modo local seguirá funcionando gracias a nuestro sistema de fallback.
         }
 
         const appId = "mi-control-gastos";
@@ -667,7 +666,7 @@
                 }
             });
         } else {
-            showLoginScreen(); // Si falla Firebase, mostrar login de todos modos (Modo Local funcionará)
+            showLoginScreen();
         }
 
         function showAppScreen() {
@@ -844,7 +843,8 @@
                 syncSettingsToUI();
                 applyCustomSettings();
                 
-                if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')) {
+                const histSec = document.getElementById('historySection');
+                if(histSec && histSec.classList.contains('open')) {
                     updateHistoryView();
                 }
             }, (error) => {
@@ -905,6 +905,11 @@
                 document.getElementById('userNameInput').value = '';
                 appSettings = {...defaultSettings};
             }
+            
+            document.getElementById('recordMonth').value = currentDashboardMonth;
+            document.getElementById('filterMonthInput').value = currentDashboardMonth;
+            document.getElementById('incomeMonth').value = currentDashboardMonth;
+
             syncSettingsToUI();
             applyCustomSettings();
         }
@@ -941,7 +946,6 @@
         function applyCustomSettings() {
             const root = document.documentElement;
             
-            // Fondo
             if (appSettings.bgImage) {
                 root.style.setProperty('--bg-image', `url(${appSettings.bgImage})`);
             } else {
@@ -950,11 +954,8 @@
             root.style.setProperty('--bg-opacity', appSettings.bgOpacity / 100);
             root.style.setProperty('--bg-brightness', appSettings.bgBrightness / 100);
 
-            // Tarjetas: Calculamos colores en RGBA para poder ponerles transparencia
             const lightRGBA = hexToRgbA(appSettings.cardColorLight, appSettings.cardOpacity);
             const darkRGBA = hexToRgbA(appSettings.cardColorDark, appSettings.cardOpacity);
-            
-            // Los interiores ("theme-inner") los hacemos un poco más transparentes para que haya contraste
             const innerLightRGBA = hexToRgbA(appSettings.cardColorLight, appSettings.cardOpacity * 0.85);
             const innerDarkRGBA = hexToRgbA(appSettings.cardColorDark, appSettings.cardOpacity * 0.7);
 
@@ -1050,12 +1051,7 @@
         // --- ARRANQUE PRINCIPAL DE LA APP UI ---
         document.addEventListener('DOMContentLoaded', () => {
             const isDark = document.documentElement.classList.contains('dark');
-            
             document.getElementById('themeButtonTextLogin').textContent = isDark ? 'Oscuro' : 'Claro';
-
-            document.getElementById('recordMonth').value = currentDashboardMonth;
-            document.getElementById('filterMonthInput').value = currentDashboardMonth;
-            document.getElementById('incomeMonth').value = currentDashboardMonth;
             
             initYearFilter();
             initCategoryGroups();
@@ -1247,7 +1243,8 @@
             if (deleteMode === 'record' && itemToDeleteId !== null) {
                 expenses = expenses.filter(exp => exp.id !== itemToDeleteId);
                 updateDashboard();
-                if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')) updateHistoryView();
+                const histSec = document.getElementById('historySection');
+                if(histSec && histSec.classList.contains('open')) updateHistoryView();
                 showToast('Registro eliminado', 'bg-gray-500');
             } else if (deleteMode === 'type' && itemToDeleteName !== null) {
                 const currentCat = document.getElementById('recordCategoryGroup').value;
@@ -1340,7 +1337,8 @@
             }
 
             updateDashboard();
-            if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')) updateHistoryView();
+            const histSec = document.getElementById('historySection');
+            if(histSec && histSec.classList.contains('open')) updateHistoryView();
             saveData();
             cancelEdit();
             showToast('Modificado con éxito', 'bg-green-500');
@@ -1367,7 +1365,8 @@
             
             if (month === currentDashboardMonth) {
                 updateDashboard();
-                if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')) {
+                const histSec = document.getElementById('historySection');
+                if(histSec && histSec.classList.contains('open')) {
                     updateHistoryView();
                 }
             }
@@ -1424,15 +1423,21 @@
                  showToast('Ingreso eliminado', 'bg-gray-500');
             } else {
                  incomes[targetMonth] = amount;
-                 showToast('Nómina guardada', 'bg-green-500');
+                 showToast('Guardado con éxito', 'bg-green-500');
             }
             
             updateDashboard();
-            if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')){
+            const histSec = document.getElementById('historySection');
+            if(histSec && histSec.classList.contains('open')){
                 updateHistoryView();
             }
             saveData(); 
-            toggleSection('incomeSection');
+            
+            // Cerrar la pestaña después de guardar
+            const incSec = document.getElementById('incomeSection');
+            if (incSec && incSec.classList.contains('open')) {
+                toggleSection('incomeSection');
+            }
         }
 
         window.toggleHistoryCategory = function(id) {
@@ -1571,6 +1576,11 @@
         }
 
         function updateChart(periodExpenses) {
+            const histSec = document.getElementById('historySection');
+            if(!histSec || !histSec.classList.contains('open')) {
+                return; // Solo carga el gráfico si la pestaña está abierta, evita bug de tamaño 0
+            }
+
             const canvas = document.getElementById('expenseChart');
             const noDataMsg = document.getElementById('noChartDataMsg');
 
@@ -1685,7 +1695,8 @@
                         syncSettingsToUI();
                         applyCustomSettings();
 
-                        if(document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')) {
+                        const histSec = document.getElementById('historySection');
+                        if(histSec && histSec.classList.contains('open')) {
                             updateHistoryView();
                         }
                         saveData(); 
@@ -1797,15 +1808,13 @@
             html.classList.toggle('dark');
             const isDark = html.classList.contains('dark');
             
-            const btnApp = document.getElementById('themeButtonTextApp');
-            if(btnApp) btnApp.textContent = isDark ? 'Oscuro' : 'Claro';
-            
             const btnLogin = document.getElementById('themeButtonTextLogin');
             if(btnLogin) btnLogin.textContent = isDark ? 'Oscuro' : 'Claro';
             
             localStorage.setItem('controlGastosTheme', isDark ? 'dark' : 'light');
 
-            if(expenseChartInstance && document.getElementById('historySection') && document.getElementById('historySection').classList.contains('open')){
+            const histSec = document.getElementById('historySection');
+            if(expenseChartInstance && histSec && histSec.classList.contains('open')){
                 updateHistoryView();
             }
         }
@@ -1822,7 +1831,7 @@
                 section.classList.remove('open');
                 section.style.paddingTop = '0px';
                 section.style.paddingBottom = '0px';
-                icon.style.transform = 'rotate(0deg)';
+                if(icon) icon.style.transform = 'rotate(0deg)';
             } else {
                 ['recordSection', 'historySection', 'incomeSection'].forEach(id => {
                     if(id !== sectionId) {
@@ -1840,11 +1849,15 @@
                 section.classList.add('open');
                 section.style.paddingTop = '0.5rem';
                 section.style.paddingBottom = '0.5rem';
-                icon.style.transform = 'rotate(180deg)';
+                if(icon) icon.style.transform = 'rotate(180deg)';
+                
+                if(sectionId === 'historySection') {
+                    updateHistoryView();
+                }
 
                 setTimeout(() => {
                     const wrapper = document.getElementById('wrapper-' + sectionId);
-                    wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if(wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             }
         }
