@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +23,14 @@
                     }
                 }
             }
+        }
+    </script>
+    <script>
+        // Memoria para el color: Cargar el tema guardado lo antes posible para evitar el parpadeo blanco
+        if (localStorage.getItem('controlGastosTheme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (localStorage.getItem('controlGastosTheme') === 'light') {
+            document.documentElement.classList.remove('dark');
         }
     </script>
     <style>
@@ -69,7 +77,7 @@
                     Toca el botón <span class="font-bold text-green-600">verde</span> "Nuevo registro".
                     <ul class="list-disc ml-5 mt-2 space-y-1">
                         <li>Elige una categoría (ejemplo: Vivienda).</li>
-                        <li>Elige de qué es el gasto (ejemplo: Luz). <i>Si falta alguno, dale al botón azul del "+" que hay al lado para crearlo.</i></li>
+                        <li>Elige de qué es el gasto (ejemplo: Luz). <i>Si falta alguno, dale al botón azul del "+" que hay al lado para crearlo. También puedes editarlos (lápiz) o borrarlos (papelera).</i></li>
                         <li>Escribe cuánto te ha costado y dale a "Añadir Gasto".</li>
                     </ul>
                 </div>
@@ -112,6 +120,22 @@
             <div class="flex gap-3">
                 <button onclick="cancelDelete()" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2.5 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Cancelar</button>
                 <button onclick="confirmDelete()" class="flex-1 bg-red-500 text-white py-2.5 rounded-xl font-semibold hover:bg-red-600 transition-colors shadow-md border-transparent">Borrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edición -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center p-4">
+        <div class="bg-white dark:bg-darkCard rounded-2xl p-6 max-w-sm w-full shadow-2xl relative">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
+                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+            </div>
+            <h2 id="editModalTitle" class="text-lg font-bold mb-2 text-center text-gray-900 dark:text-white">Editar nombre</h2>
+            <p id="editModalText" class="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">Los gastos guardados con este nombre se actualizarán automáticamente.</p>
+            <input type="text" id="editModalInput" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 mb-6 focus:ring-2 focus:ring-primary outline-none">
+            <div class="flex gap-3">
+                <button onclick="cancelEdit()" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2.5 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Cancelar</button>
+                <button onclick="confirmEdit()" class="flex-1 bg-yellow-500 text-white py-2.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors shadow-md border-transparent">Guardar</button>
             </div>
         </div>
     </div>
@@ -193,10 +217,13 @@
                                 <div class="flex gap-2 items-center">
                                     <select id="recordCategoryGroup" onchange="updateTypeSelect()" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none appearance-none font-semibold">
                                     </select>
-                                    <button onclick="toggleNewCategoryInput()" class="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors shadow-sm" title="Añadir nueva categoría">
+                                    <button onclick="toggleNewCategoryInput()" class="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors shadow-sm shrink-0" title="Añadir nueva categoría">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     </button>
-                                    <button onclick="promptDeleteCategoryGroup()" class="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors shadow-sm" title="Borrar categoría seleccionada">
+                                    <button onclick="promptEditCategoryGroup()" class="p-2.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg hover:bg-yellow-200 transition-colors shadow-sm shrink-0" title="Editar categoría seleccionada">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    </button>
+                                    <button onclick="promptDeleteCategoryGroup()" class="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors shadow-sm shrink-0" title="Borrar categoría seleccionada">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                     </button>
                                 </div>
@@ -213,10 +240,13 @@
                                     <select id="recordType" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none appearance-none">
                                         <option value="" disabled selected>Selecciona tipo...</option>
                                     </select>
-                                    <button onclick="toggleNewTypeInput()" class="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors shadow-sm" title="Añadir nuevo tipo">
+                                    <button onclick="toggleNewTypeInput()" class="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors shadow-sm shrink-0" title="Añadir nuevo tipo">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     </button>
-                                    <button onclick="promptDeleteType()" class="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors shadow-sm" title="Borrar tipo seleccionado">
+                                    <button onclick="promptEditType()" class="p-2.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg hover:bg-yellow-200 transition-colors shadow-sm shrink-0" title="Editar tipo seleccionado">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    </button>
+                                    <button onclick="promptDeleteType()" class="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors shadow-sm shrink-0" title="Borrar tipo seleccionado">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                     </button>
                                 </div>
@@ -235,7 +265,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-1">Fecha</label>
-                                    <input type="month" id="recordMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm">
+                                    <input type="month" id="recordMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm capitalize">
                                 </div>
                             </div>
 
@@ -264,15 +294,15 @@
                         <div class="py-4 space-y-4">
                             
                             <!-- Filtros interactivos -->
-                            <div class="flex gap-2 bg-white dark:bg-gray-900 p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <div class="flex-1 relative">
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-0.5">Ver por Mes</label>
-                                    <input type="month" id="filterMonthInput" onfocus="setHistoryMode('month')" onchange="onHistoryMonthChange()" class="w-full bg-transparent text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none ring-2 ring-primary border-transparent cursor-pointer transition-all">
+                            <div class="flex gap-2 bg-white dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                                <div class="flex-1 flex flex-col gap-1.5">
+                                    <button onclick="setHistoryMode('month')" id="btnModeMonth" class="bg-primary text-white text-[10px] uppercase tracking-wide font-bold py-1.5 rounded shadow-sm transition-colors">Ver por Mes</button>
+                                    <input type="month" id="filterMonthInput" onchange="onHistoryMonthChange()" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary border-transparent cursor-pointer transition-all text-center capitalize">
                                 </div>
                                 <div class="w-px bg-gray-200 dark:bg-gray-700 my-1"></div>
-                                <div class="flex-1 relative">
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-0.5">Ver por Año</label>
-                                    <select id="filterYearSelect" onfocus="setHistoryMode('year')" onchange="setHistoryMode('year')" class="w-full bg-transparent text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none border-transparent cursor-pointer transition-all appearance-none">
+                                <div class="flex-1 flex flex-col gap-1.5">
+                                    <button onclick="setHistoryMode('year')" id="btnModeYear" class="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] uppercase tracking-wide font-bold py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Ver por Año</button>
+                                    <select id="filterYearSelect" onchange="onHistoryYearChange()" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded p-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary border-transparent cursor-pointer transition-all text-center appearance-none">
                                     </select>
                                 </div>
                             </div>
@@ -336,7 +366,7 @@
                             <div class="flex gap-2">
                                 <div class="flex-1">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-1">Mes a valorar</label>
-                                    <input type="month" id="incomeMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm">
+                                    <input type="month" id="incomeMonth" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-primary outline-none text-sm capitalize">
                                 </div>
                                 <div class="relative flex-1">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-1 mb-1">Ingresos</label>
@@ -414,6 +444,10 @@
         let itemToDeleteId = null; 
         let itemToDeleteName = null; 
 
+        let editMode = null;
+        let itemToEditOldName = null;
+        let editCategoryContext = null;
+
         const moneyFormatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
         const chartColors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#ec4899', '#06b6d4', '#f97316'];
 
@@ -445,11 +479,6 @@
 
         function saveName() {
             saveData();
-        }
-
-        function hasEmoji(str) {
-            const emojiRegex = /\p{Emoji}/u;
-            return emojiRegex.test(str.charAt(0)) || emojiRegex.test(str.charAt(1));
         }
 
         // --- Inicialización ---
@@ -544,7 +573,6 @@
             let newCat = input.value.trim();
 
             if (!newCat) return showToast('Escribe un nombre válido', 'bg-red-500');
-            if (!hasEmoji(newCat)) newCat = '🏷️ ' + newCat;
 
             if (Object.keys(dataCategories).some(c => c.toLowerCase() === newCat.toLowerCase())) {
                 return showToast('Esa categoría ya existe', 'bg-yellow-500');
@@ -577,7 +605,6 @@
 
             if (!currentCat) return showToast('Primero crea una categoría', 'bg-yellow-500');
             if (!newType) return showToast('Escribe un nombre válido', 'bg-red-500');
-            if (!hasEmoji(newType)) newType = '🏷️ ' + newType;
 
             if (dataCategories[currentCat].some(t => t.toLowerCase() === newType.toLowerCase())) {
                 return showToast('Ese tipo ya existe en ' + currentCat, 'bg-yellow-500');
@@ -608,7 +635,8 @@
             balEl.className = `font-bold text-sm mt-0.5 ${balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`;
 
             const dateObj = new Date(targetMonth + '-01');
-            const monthLabel = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(dateObj);
+            const formattedMonth = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(dateObj);
+            const monthLabel = formattedMonth.charAt(0).toUpperCase() + formattedMonth.slice(1);
             document.getElementById('currentMonthLabel').textContent = monthLabel;
         }
 
@@ -670,6 +698,91 @@
             cancelDelete();
         }
 
+        // --- Lógica de Edición ---
+        function promptEditCategoryGroup() {
+            const currentCat = document.getElementById('recordCategoryGroup').value;
+            if (!currentCat) return showToast('Selecciona una categoría', 'bg-yellow-500');
+            
+            editMode = 'categoryGroup';
+            itemToEditOldName = currentCat;
+            
+            document.getElementById('editModalTitle').textContent = 'Editar Categoría';
+            document.getElementById('editModalInput').value = currentCat;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function promptEditType() {
+            const currentCat = document.getElementById('recordCategoryGroup').value;
+            const currentType = document.getElementById('recordType').value;
+            if (!currentType) return showToast('Selecciona un tipo para editar', 'bg-yellow-500');
+
+            editMode = 'type';
+            itemToEditOldName = currentType;
+            editCategoryContext = currentCat;
+
+            document.getElementById('editModalTitle').textContent = 'Editar Tipo de Gasto';
+            document.getElementById('editModalInput').value = currentType;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function cancelEdit() {
+            editMode = null;
+            itemToEditOldName = null;
+            editCategoryContext = null;
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        function confirmEdit() {
+            const newName = document.getElementById('editModalInput').value.trim();
+            if (!newName) {
+                return showToast('El nombre no puede estar vacío', 'bg-red-500');
+            }
+
+            if (editMode === 'categoryGroup') {
+                if (newName !== itemToEditOldName) {
+                    // Evitar duplicados (insensible a mayúsculas)
+                    if (Object.keys(dataCategories).some(c => c.toLowerCase() === newName.toLowerCase())) {
+                        return showToast('Ya existe una categoría con ese nombre', 'bg-yellow-500');
+                    }
+                    dataCategories[newName] = dataCategories[itemToEditOldName];
+                    delete dataCategories[itemToEditOldName];
+                    
+                    expenses.forEach(exp => {
+                        if (exp.category === itemToEditOldName) exp.category = newName;
+                    });
+                    
+                    initCategoryGroups();
+                    document.getElementById('recordCategoryGroup').value = newName;
+                    updateTypeSelect();
+                }
+            } else if (editMode === 'type') {
+                if (newName !== itemToEditOldName) {
+                    const catArray = dataCategories[editCategoryContext];
+                    // Evitar duplicados
+                    if (catArray.some(t => t.toLowerCase() === newName.toLowerCase())) {
+                         return showToast('Ya existe este tipo', 'bg-yellow-500');
+                    }
+                    const index = catArray.indexOf(itemToEditOldName);
+                    if (index !== -1) catArray[index] = newName;
+
+                    expenses.forEach(exp => {
+                        if (exp.category === editCategoryContext && exp.type === itemToEditOldName) {
+                            exp.type = newName;
+                        }
+                    });
+
+                    updateTypeSelect();
+                    document.getElementById('recordType').value = newName;
+                }
+            }
+
+            updateDashboard();
+            if(document.getElementById('historySection').classList.contains('open')) updateHistoryView();
+            saveData();
+            cancelEdit();
+            showToast('Modificado con éxito', 'bg-green-500');
+        }
+
         // --- Guardado de Registros ---
         function saveRecord() {
             const categoryGroup = document.getElementById('recordCategoryGroup').value;
@@ -704,16 +817,16 @@
         // --- Historial, Gráficos y Nómina ---
         function setHistoryMode(mode) {
             currentHistoryMode = mode;
-            const monthInput = document.getElementById('filterMonthInput');
-            const yearSelect = document.getElementById('filterYearSelect');
+            const btnMonth = document.getElementById('btnModeMonth');
+            const btnYear = document.getElementById('btnModeYear');
             
             if(mode === 'month') {
-                monthInput.classList.add('ring-2', 'ring-primary');
-                yearSelect.classList.remove('ring-2', 'ring-primary');
+                btnMonth.className = 'bg-primary text-white text-[10px] uppercase tracking-wide font-bold py-1.5 rounded shadow-sm transition-colors';
+                btnYear.className = 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] uppercase tracking-wide font-bold py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors';
                 document.getElementById('listTitle').textContent = "Detalles del Mes";
             } else {
-                yearSelect.classList.add('ring-2', 'ring-primary');
-                monthInput.classList.remove('ring-2', 'ring-primary');
+                btnYear.className = 'bg-primary text-white text-[10px] uppercase tracking-wide font-bold py-1.5 rounded shadow-sm transition-colors';
+                btnMonth.className = 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] uppercase tracking-wide font-bold py-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors';
                 document.getElementById('listTitle').textContent = "Detalles del Año";
             }
             updateHistoryView();
@@ -729,6 +842,11 @@
             
             updateDashboard();
             updateIncomeInput();
+            saveData();
+        }
+
+        function onHistoryYearChange() {
+            setHistoryMode('year');
             saveData();
         }
 
@@ -756,7 +874,8 @@
 
         function getShortMonthName(yyyy_mm) {
             const date = new Date(yyyy_mm + '-01');
-            return new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(date);
+            const name = new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(date);
+            return name.charAt(0).toUpperCase() + name.slice(1);
         }
 
         function toggleHistoryCategory(id) {
@@ -1117,6 +1236,9 @@
             const isDark = html.classList.contains('dark');
             
             document.getElementById('themeButtonText').textContent = isDark ? 'Oscuro' : 'Claro';
+            
+            // Guardar la preferencia de color en la memoria del móvil
+            localStorage.setItem('controlGastosTheme', isDark ? 'dark' : 'light');
 
             if(expenseChartInstance && document.getElementById('historySection').classList.contains('open')){
                 updateHistoryView();
