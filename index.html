@@ -82,7 +82,8 @@
     <div id="appRootContainer" class="relative z-10">
 
         <!-- ================= PANTALLA DE INICIO DE SESIÓN ================= -->
-        <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
+        <!-- Añadido "hidden" inicial para evitar parpadeos si ya hay sesión -->
+        <div id="loginScreen" class="hidden min-h-screen flex-col items-center justify-center p-4 relative z-10">
             
             <div class="theme-card p-8 rounded-3xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-800 backdrop-blur-sm">
                 
@@ -351,7 +352,7 @@
                                     <span id="fakeText-dashboardMonthInput">Mes</span>
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </div>
-                                <input type="month" id="dashboardMonthInput" onchange="onDashboardMonthChange()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <input type="month" id="dashboardMonthInput" onchange="syncAllMonths(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                             </div>
                         </div>
 
@@ -450,7 +451,7 @@
                                                     <span id="fakeText-recordMonth">Mes</span>
                                                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                 </div>
-                                                <input type="month" id="recordMonth" onchange="updateAllFakeDates()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                                <input type="month" id="recordMonth" onchange="syncAllMonths(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                                             </div>
                                         </div>
                                     </div>
@@ -487,7 +488,7 @@
                                                 <div class="w-full bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded p-1.5 text-sm border-transparent flex items-center justify-center font-medium pointer-events-none h-[32px]">
                                                     <span id="fakeText-filterMonthInput">Mes</span>
                                                 </div>
-                                                <input type="month" id="filterMonthInput" onchange="onHistoryMonthChange()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                                <input type="month" id="filterMonthInput" onchange="syncAllMonths(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                                             </div>
                                         </div>
                                         <div class="w-px bg-gray-200 dark:bg-gray-700 my-1"></div>
@@ -552,7 +553,7 @@
                                                     <span id="fakeText-incomeMonth">Mes</span>
                                                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                 </div>
-                                                <input type="month" id="incomeMonth" onchange="updateIncomeInput(); updateAllFakeDates()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                                <input type="month" id="incomeMonth" onchange="syncAllMonths(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                                             </div>
                                         </div>
                                         <div>
@@ -609,7 +610,7 @@
 
                         <!-- Créditos -->
                         <div class="mt-8 mb-2 text-center flex justify-center pb-8">
-                            <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-wider bg-white/50 dark:bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">AVS v.1.7 (Sincronizado)</span>
+                            <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-wider bg-white/50 dark:bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">AVS v.1.8 (Sincronizado)</span>
                         </div>
 
                     </div>
@@ -730,6 +731,44 @@
             }
         }
 
+        // --- SISTEMA DE SINCRONIZACIÓN DE MES GLOBAL ---
+        window.syncAllMonths = function(newMonth) {
+            if(!newMonth) return;
+            currentDashboardMonth = newMonth;
+
+            // 1. Actualizar los values reales de todos los inputs (para que si el usuario abre el selector, esté ahí)
+            const dMonth = document.getElementById('dashboardMonthInput');
+            if(dMonth) dMonth.value = newMonth;
+            
+            const rMonth = document.getElementById('recordMonth');
+            if(rMonth) rMonth.value = newMonth;
+            
+            const fMonth = document.getElementById('filterMonthInput');
+            if(fMonth) fMonth.value = newMonth;
+            
+            const iMonth = document.getElementById('incomeMonth');
+            if(iMonth) iMonth.value = newMonth;
+
+            // 2. Forzar que el historial se vea "por mes"
+            setHistoryMode('month');
+
+            // 3. Actualizar textos visuales (las cajitas bonitas personalizadas)
+            updateAllFakeDates();
+
+            // 4. Recalcular balance e ingresos de la pantalla principal
+            updateDashboard();
+            updateIncomeInput();
+
+            // 5. Si la pestaña de historial está abierta, actualizarla también
+            const histSec = document.getElementById('historySection');
+            if(histSec && histSec.classList.contains('open')) {
+                updateHistoryView();
+            }
+
+            // 6. Guardar en memoria (y en la nube) cuál fue el último mes que miró
+            saveData();
+        }
+
         // --- SISTEMA DE NOTIFICACIONES TOAST (GLOBAL) ---
         window.showToast = function(message, colorClass = 'bg-green-500') {
             const toast = document.getElementById('toast');
@@ -750,7 +789,8 @@
                 if (user) {
                     currentUser = user;
                     isLocalMode = false;
-                    document.getElementById('userNameInput').value = user.displayName || '';
+                    const userNameEl = document.getElementById('userNameInput');
+                    if(userNameEl) userNameEl.value = user.displayName || '';
                     showAppScreen();
                     setupFirestoreListener();
                 } else {
@@ -768,7 +808,10 @@
         function showAppScreen() {
             const loginScreen = document.getElementById('loginScreen');
             const appScreen = document.getElementById('appScreen');
-            if(loginScreen) loginScreen.classList.add('hidden');
+            if(loginScreen) {
+                loginScreen.classList.add('hidden');
+                loginScreen.classList.remove('flex');
+            }
             if(appScreen) appScreen.classList.remove('hidden');
         }
 
@@ -776,7 +819,10 @@
             const appScreen = document.getElementById('appScreen');
             const loginScreen = document.getElementById('loginScreen');
             if(appScreen) appScreen.classList.add('hidden');
-            if(loginScreen) loginScreen.classList.remove('hidden');
+            if(loginScreen) {
+                loginScreen.classList.remove('hidden');
+                loginScreen.classList.add('flex');
+            }
             const pass = document.getElementById('authPassword');
             if(pass) pass.value = '';
         }
@@ -934,10 +980,15 @@
                     cloudIcon.title = "Nube sincronizada";
                 }
 
-                document.getElementById('dashboardMonthInput').value = currentDashboardMonth;
-                document.getElementById('recordMonth').value = currentDashboardMonth;
-                document.getElementById('filterMonthInput').value = currentDashboardMonth;
-                document.getElementById('incomeMonth').value = currentDashboardMonth;
+                // Sincronizar todos los selectores de mes HTML con el recién cargado
+                const dashMonth = document.getElementById('dashboardMonthInput');
+                if(dashMonth) dashMonth.value = currentDashboardMonth;
+                const recMonth = document.getElementById('recordMonth');
+                if(recMonth) recMonth.value = currentDashboardMonth;
+                const filMonth = document.getElementById('filterMonthInput');
+                if(filMonth) filMonth.value = currentDashboardMonth;
+                const incMonth = document.getElementById('incomeMonth');
+                if(incMonth) incMonth.value = currentDashboardMonth;
                 
                 initCategoryGroups();
                 updateDashboard();
@@ -1009,10 +1060,14 @@
                 appSettings = {...defaultSettings};
             }
             
-            document.getElementById('dashboardMonthInput').value = currentDashboardMonth;
-            document.getElementById('recordMonth').value = currentDashboardMonth;
-            document.getElementById('filterMonthInput').value = currentDashboardMonth;
-            document.getElementById('incomeMonth').value = currentDashboardMonth;
+            const dashMonth = document.getElementById('dashboardMonthInput');
+            if(dashMonth) dashMonth.value = currentDashboardMonth;
+            const recMonth = document.getElementById('recordMonth');
+            if(recMonth) recMonth.value = currentDashboardMonth;
+            const filMonth = document.getElementById('filterMonthInput');
+            if(filMonth) filMonth.value = currentDashboardMonth;
+            const incMonth = document.getElementById('incomeMonth');
+            if(incMonth) incMonth.value = currentDashboardMonth;
 
             syncSettingsToUI();
             applyCustomSettings();
@@ -1172,36 +1227,6 @@
             applyCustomSettings();
             updateAllFakeDates();
         });
-
-        // --- CAMBIO DE MES EN LA PANTALLA DE INICIO ---
-        window.onDashboardMonthChange = function() {
-            const newMonth = document.getElementById('dashboardMonthInput').value;
-            if(!newMonth) return;
-            
-            currentDashboardMonth = newMonth;
-            
-            // Sincronizar todos los demás selectores
-            document.getElementById('recordMonth').value = currentDashboardMonth;
-            document.getElementById('filterMonthInput').value = currentDashboardMonth;
-            document.getElementById('incomeMonth').value = currentDashboardMonth;
-            
-            setHistoryMode('month'); // Forzamos a ver por mes en el historial si se cambia aquí
-            updateDashboard();
-            updateIncomeInput();
-            updateAllFakeDates();
-            
-            const histSec = document.getElementById('historySection');
-            if(histSec && histSec.classList.contains('open')) {
-                updateHistoryView();
-            }
-            
-            saveData();
-        }
-
-        const incomeMonthElement = document.getElementById('incomeMonth');
-        if(incomeMonthElement) {
-            incomeMonthElement.addEventListener('change', updateIncomeInput);
-        }
 
         function updateIncomeInput() {
             const targetMonth = document.getElementById('incomeMonth').value;
@@ -1540,21 +1565,6 @@
                 if(lstTitle) lstTitle.textContent = "Detalles del Año";
             }
             updateHistoryView();
-        }
-
-        window.onHistoryMonthChange = function() {
-            setHistoryMode('month');
-            const newMonth = document.getElementById('filterMonthInput').value;
-            currentDashboardMonth = newMonth;
-            
-            document.getElementById('dashboardMonthInput').value = newMonth;
-            document.getElementById('incomeMonth').value = newMonth;
-            document.getElementById('recordMonth').value = newMonth;
-            
-            updateAllFakeDates();
-            updateDashboard();
-            updateIncomeInput();
-            saveData();
         }
 
         window.onHistoryYearChange = function() {
@@ -1984,7 +1994,7 @@
 
         window.toggleSection = function(sectionId) {
             const section = document.getElementById(sectionId);
-            if(!section) return; // Protección
+            if(!section) return; 
 
             const icon = document.getElementById('icon-' + sectionId);
             
@@ -2012,7 +2022,6 @@
                 section.style.paddingBottom = '0.5rem';
                 if(icon) icon.style.transform = 'rotate(180deg)';
                 
-                // Darle tiempo al contenedor HTML a expandirse antes de pintar el gráfico (para que no salga aplastado)
                 if(sectionId === 'historySection') {
                     setTimeout(() => {
                         updateHistoryView();
