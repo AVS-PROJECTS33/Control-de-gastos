@@ -1664,21 +1664,19 @@
                     const groupWrapper = document.createElement('div');
                     groupWrapper.className = 'border border-gray-200/50 dark:border-gray-700/50 rounded-lg overflow-hidden shadow-sm';
                     
-                    // ICONO ROTADO POR DEFECTO PARA INDICAR QUE ESTÁ ABIERTO
                     const headerHTML = `
                         <button onclick="toggleHistoryCategory('${catId}')" class="w-full flex justify-between items-center theme-card hover:opacity-80 p-2.5 transition-colors">
                             <span class="font-bold text-sm text-gray-800 dark:text-gray-200">${cat}</span>
                             <div class="flex items-center gap-3">
                                 <span class="font-extrabold text-sm text-gray-900 dark:text-white">${moneyFormatter.format(group.subtotal)}</span>
-                                <svg id="icon-${catId}" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 transition-transform transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                <svg id="icon-${catId}" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 transition-transform transform rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                             </div>
                         </button>
                     `;
                     
                     const itemsContainer = document.createElement('div');
                     itemsContainer.id = catId;
-                    // CLASE 'FLEX' POR DEFECTO EN LUGAR DE HIDDEN
-                    itemsContainer.className = 'flex flex-col theme-inner';
+                    itemsContainer.className = 'hidden flex-col theme-inner';
                     
                     let itemsToRender = [];
                     if (currentHistoryMode === 'year') {
