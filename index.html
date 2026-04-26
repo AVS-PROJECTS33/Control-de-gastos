@@ -1647,7 +1647,8 @@
             const incDisplay = document.getElementById('historyIncomeDisplay');
             const balEl = document.getElementById('historyBalance');
             
-            if(!listContainer || !totalElement || !incDisplay || !balEl) return;
+            // Corrección: Solo detenemos la función si faltan los contenedores principales de la lista
+            if(!listContainer || !totalElement) return;
 
             let totalExp = 0;
             listContainer.innerHTML = '';
@@ -1740,9 +1741,13 @@
             totalElement.textContent = moneyFormatter.format(totalExp);
             
             const balance = totalPeriodIncome - totalExp;
-            incDisplay.textContent = moneyFormatter.format(totalPeriodIncome);
-            balEl.textContent = moneyFormatter.format(balance);
-            balEl.className = `font-bold ${balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`;
+            
+            // Corrección: Actualizamos estos elementos solo si existen en el HTML
+            if (incDisplay) incDisplay.textContent = moneyFormatter.format(totalPeriodIncome);
+            if (balEl) {
+                balEl.textContent = moneyFormatter.format(balance);
+                balEl.className = `font-bold ${balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`;
+            }
         }
 
         // --- Gráfico de Historial (Secundario) ---
