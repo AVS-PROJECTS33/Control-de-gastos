@@ -1647,7 +1647,9 @@
             const incDisplay = document.getElementById('historyIncomeDisplay');
             const balEl = document.getElementById('historyBalance');
             
-            if(!listContainer || !totalElement || !incDisplay || !balEl) return;
+            // CORRECCIÓN: Solo detenemos el proceso si falta la lista. 
+            // Ya no comprobamos 'incDisplay' ni 'balEl' porque los quitamos de esta pestaña.
+            if(!listContainer || !totalElement) return;
 
             let totalExp = 0;
             listContainer.innerHTML = '';
