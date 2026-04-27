@@ -265,10 +265,14 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </button>
                         
-                        <!-- Botón Tema (Solo Icono) -->
+                        <!-- Botón Tema (Solo Icono) CORREGIDO -->
                         <button onclick="toggleTheme()" class="p-1.5 rounded-lg border-2 border-yellow-500 text-yellow-600 bg-yellow-50/80 hover:bg-yellow-100 dark:border-gray-500 dark:text-gray-200 dark:bg-black/60 dark:hover:bg-gray-800 transition shadow-sm backdrop-blur-sm" title="Cambiar luz/oscuro">
-                            <svg id="themeIconLightApp" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                            <svg id="themeIconDarkApp" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                            <svg id="themeIconLightApp" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <svg id="themeIconDarkApp" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
                         </button>
 
                         <!-- Botón Cerrar Sesión -->
@@ -538,7 +542,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </span>
-                                    Nómina o pensión (opcional)
+                                    Nómina o pensión
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transition-transform" id="icon-incomeSection" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                             </button>
@@ -1228,6 +1232,36 @@
             updateAllFakeDates();
         });
 
+        // --- CAMBIO DE MES EN LA PANTALLA DE INICIO ---
+        window.onDashboardMonthChange = function() {
+            const newMonth = document.getElementById('dashboardMonthInput').value;
+            if(!newMonth) return;
+            
+            currentDashboardMonth = newMonth;
+            
+            // Sincronizar todos los demás selectores
+            document.getElementById('recordMonth').value = currentDashboardMonth;
+            document.getElementById('filterMonthInput').value = currentDashboardMonth;
+            document.getElementById('incomeMonth').value = currentDashboardMonth;
+            
+            setHistoryMode('month'); // Forzamos a ver por mes en el historial si se cambia aquí
+            updateDashboard();
+            updateIncomeInput();
+            updateAllFakeDates();
+            
+            const histSec = document.getElementById('historySection');
+            if(histSec && histSec.classList.contains('open')) {
+                updateHistoryView();
+            }
+            
+            saveData();
+        }
+
+        const incomeMonthElement = document.getElementById('incomeMonth');
+        if(incomeMonthElement) {
+            incomeMonthElement.addEventListener('change', updateIncomeInput);
+        }
+
         function updateIncomeInput() {
             const targetMonth = document.getElementById('incomeMonth').value;
             const val = incomes[targetMonth] || '';
@@ -1543,7 +1577,7 @@
             }
 
             saveData(); 
-            toggleSection('recordSection');
+            // toggleSection('recordSection'); <-- Eliminado para que se mantenga abierta
             showToast('Gasto registrado con éxito', 'bg-green-500');
         }
 
@@ -1647,8 +1681,6 @@
             const incDisplay = document.getElementById('historyIncomeDisplay');
             const balEl = document.getElementById('historyBalance');
             
-            // CORRECCIÓN: Solo detenemos el proceso si falta la lista. 
-            // Ya no comprobamos 'incDisplay' ni 'balEl' porque los quitamos de esta pestaña.
             if(!listContainer || !totalElement) return;
 
             let totalExp = 0;
@@ -1743,7 +1775,6 @@
             
             const balance = totalPeriodIncome - totalExp;
             
-            // Corrección: Actualizamos estos elementos solo si existen en el HTML
             if (incDisplay) incDisplay.textContent = moneyFormatter.format(totalPeriodIncome);
             if (balEl) {
                 balEl.textContent = moneyFormatter.format(balance);
