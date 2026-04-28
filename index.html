@@ -4,6 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Gastos en la Nube</title>
+    
+    <!-- Configuraciones PWA y App Nativa (Android & iOS) -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gastos">
+    
+    <!-- Generador de Icono PNG nativo (Soluciona el problema de la "G" en iPhone/Android) -->
+    <script>
+        (function() {
+            // El diseño de la ruleta de colores con el Euro
+            const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256,256 L0,100 L0,0 L256,0 Z" fill="#dcd317"/><path d="M256,256 L256,0 L512,0 L512,230 Z" fill="#009fe3"/><path d="M256,256 L512,230 L512,512 L150,512 Z" fill="#428b32"/><path d="M256,256 L150,512 L0,512 L0,280 Z" fill="#e30022"/><path d="M256,256 L0,280 L0,100 Z" fill="#3d234a"/><line x1="256" y1="256" x2="0" y2="100" stroke="#3d234a" stroke-width="16"/><line x1="256" y1="256" x2="256" y2="0" stroke="#3d234a" stroke-width="16"/><line x1="256" y1="256" x2="512" y2="230" stroke="#3d234a" stroke-width="16"/><line x1="256" y1="256" x2="150" y2="512" stroke="#3d234a" stroke-width="16"/><line x1="256" y1="256" x2="0" y2="280" stroke="#3d234a" stroke-width="16"/><circle cx="256" cy="256" r="150" fill="#3d234a"/><text x="256" y="335" font-family="system-ui, sans-serif" font-size="220" font-weight="900" fill="white" text-anchor="middle">€</text></svg>`;
+            
+            // Creamos un lienzo para convertirlo a PNG (Requisito estricto de iOS)
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                const pngUrl = canvas.toDataURL('image/png');
+                
+                // Añadimos el icono para Apple (iOS)
+                const appleLink = document.createElement('link');
+                appleLink.rel = 'apple-touch-icon';
+                appleLink.href = pngUrl;
+                document.head.appendChild(appleLink);
+
+                // Añadimos el icono normal para Android/Navegador
+                const iconLink = document.createElement('link');
+                iconLink.rel = 'icon';
+                iconLink.type = 'image/png';
+                iconLink.href = pngUrl;
+                document.head.appendChild(iconLink);
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js para el gráfico de sectores -->
@@ -927,7 +968,7 @@
             isLocalMode = true;
             const cloudIcon = document.getElementById('cloudSyncIcon');
             if(cloudIcon) {
-                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>`;
+                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 001 1m-6 0h6"></path></svg>`;
                 cloudIcon.title = "Modo Local (Desconectado)";
             }
             
@@ -1577,7 +1618,6 @@
             }
 
             saveData(); 
-            // toggleSection('recordSection'); <-- Eliminado para que se mantenga abierta
             showToast('Gasto registrado con éxito', 'bg-green-500');
         }
 
