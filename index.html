@@ -968,7 +968,7 @@
             isLocalMode = true;
             const cloudIcon = document.getElementById('cloudSyncIcon');
             if(cloudIcon) {
-                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 001 1m-6 0h6"></path></svg>`;
+                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>`;
                 cloudIcon.title = "Modo Local (Desconectado)";
             }
             
@@ -988,6 +988,16 @@
                 }
                 isLocalMode = false;
                 currentUser = null;
+                
+                // --- CÓDIGO CORREGIDO: LIMPIEZA DE SEGURIDAD ---
+                // Al cerrar sesión, borramos los datos temporales del usuario anterior
+                // para que no se mezclen o se suban por accidente a otra cuenta.
+                expenses = [];
+                incomes = {};
+                dataCategories = {...defaultCategories};
+                document.getElementById('userNameInput').value = '';
+                // -----------------------------------------------
+
                 showLoginScreen();
                 showToast('Sesión cerrada', 'bg-blue-500');
             } catch (e) {
@@ -1017,7 +1027,18 @@
                     if(data.lastMonth) currentDashboardMonth = data.lastMonth;
                     appSettings = data.settings || {...defaultSettings};
                 } else {
-                    saveData();
+                    // --- CÓDIGO CORREGIDO: EVITAR BORRADO ACCIDENTAL ---
+                    // Antes decía "saveData();" directamente, lo cual aplastaba la nube.
+                    // Ahora, solo guarda si realmente hay datos (Ej: has creado la cuenta
+                    // después de usar el modo local). Si no, simplemente limpia la vista.
+                    if (expenses.length > 0 || Object.keys(incomes).length > 0) {
+                        saveData();
+                    } else {
+                        dataCategories = {...defaultCategories};
+                        expenses = [];
+                        incomes = {};
+                    }
+                    // ---------------------------------------------------
                 }
 
                 if(cloudIcon) {
