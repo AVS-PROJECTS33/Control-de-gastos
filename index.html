@@ -701,6 +701,7 @@
         let isLocalMode = false;
         let isRegisterMode = false;
         let firestoreUnsubscribe = null;
+        let isFirestoreReady = false;
 
         // --- Estado y Base de Datos ---
         let defaultCategories = {
@@ -968,7 +969,7 @@
             isLocalMode = true;
             const cloudIcon = document.getElementById('cloudSyncIcon');
             if(cloudIcon) {
-                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>`;
+                cloudIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 001 1m-6 0h6"></path></svg>`;
                 cloudIcon.title = "Modo Local (Desconectado)";
             }
             
@@ -988,6 +989,7 @@
                 }
                 isLocalMode = false;
                 currentUser = null;
+                isFirestoreReady = false;
                 
                 // --- CÓDIGO CORREGIDO: LIMPIEZA DE SEGURIDAD ---
                 // Al cerrar sesión, borramos los datos temporales del usuario anterior
@@ -1011,6 +1013,7 @@
             const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'finance', 'data');
             
             firestoreUnsubscribe = onSnapshot(docRef, (docSnap) => {
+                isFirestoreReady = true;
                 const cloudIcon = document.getElementById('cloudSyncIcon');
                 
                 if (docSnap.exists()) {
@@ -1068,6 +1071,7 @@
                     updateHistoryView();
                 }
             }, (error) => {
+                isFirestoreReady = false;
                 console.error("Error Firestore:", error);
                 const cloudIcon = document.getElementById('cloudSyncIcon');
                 if(cloudIcon) {
@@ -1090,6 +1094,12 @@
 
             if (isLocalMode || !currentUser || !db) {
                 localStorage.setItem('controlGastosData_fallback', JSON.stringify(dataToSave));
+                return;
+            }
+
+            // --- NUEVO ESCUDO: Si Firestore no ha cargado bien (ej. Wi-Fi empresa bloqueando), NO guardamos ---
+            if (!isFirestoreReady) {
+                showToast("Conexión bloqueada por tu red. No se guardará para proteger tus datos.", "bg-red-500");
                 return;
             }
             
